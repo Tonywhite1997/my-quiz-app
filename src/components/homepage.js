@@ -34,7 +34,7 @@ export default function Homepage() {
 
   return (
     <main className="main--homepage">
-      <h1 className="homepage--h1">Qizzical</h1>
+      <h1 className="homepage--h1">Quizzical</h1>
       <p className="homepage--p">
         Try your knowledge with random questions in multiple topics. Choose
         category and difficulty to start! Do you think you can ace it?
