@@ -10,6 +10,19 @@ body{
     font-size: 16px;
 }
 
+select{
+    width: 20rem;
+    height: 30px;
+    margin-bottom: 1.5em;
+    background-color: #F5F7FB;
+}
+
+option{
+    background-color: #4D5B9E;
+    color: #F5F7FB;
+    font-weight: 400;
+}
+
 .main--homepage, .main--quizpage{
     min-height: 100vh;
     overflow-x: hidden;
@@ -70,6 +83,20 @@ body{
     align-items: center;
     /* padding-left: 3em; */
     padding-top: 1em;
+    position: relative;
+}
+
+.choice{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: .5em 1em;
+    color: #F5F7FB;
+    background-color: #4D5B9E;
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
 }
 
 .question--count{
@@ -177,4 +204,5 @@ body{
     color: #F5F7FB;
     text-decoration: none;
     font-weight: 700;
+    border-radius: 5px;
 }

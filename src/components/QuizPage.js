@@ -13,19 +13,73 @@ export default function QuizPage() {
   const [correct, setCorrect] = useState(0);
   const [selected, setSelected] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [pickedOption, setPickedOption] = useState("");
 
   let optionsToPick;
   let shuffledOptions;
   let questionElement;
   let optionElement;
+  let pickedIndex;
 
   async function getData() {
+    let userChoices = JSON.parse(localStorage.getItem("choice")) || [];
+    let diffToLowerCase = userChoices.difficulty.toLowerCase();
+
+    let storedCategory = userChoices.category;
+    let formattedCategory;
+    switch (storedCategory) {
+      case "Science: Computers":
+        formattedCategory = 18;
+        break;
+
+      case "Sports":
+        formattedCategory = 21;
+        break;
+
+      case "General Knowledge":
+        formattedCategory = 9;
+        break;
+
+      case "Science: Mathematics":
+        formattedCategory = 19;
+        break;
+
+      case "History":
+        formattedCategory = 23;
+        break;
+
+      case "Vehicles":
+        formattedCategory = 28;
+        break;
+
+      case "Animals":
+        formattedCategory = 27;
+        break;
+
+      case "Celebrities":
+        formattedCategory = 26;
+        break;
+
+      case "Art":
+        formattedCategory = 25;
+        break;
+      case "Science & Nature":
+        formattedCategory = 17;
+        break;
+      case "Entertainment: Music":
+        formattedCategory = 12;
+        break;
+
+      default:
+        return;
+    }
+
     try {
       const res = await axios.get("https://opentdb.com/api.php?", {
         params: {
           amount: 5,
-          category: 18,
-          difficulty: "easy",
+          category: formattedCategory,
+          difficulty: diffToLowerCase,
           type: "multiple",
         },
       });
@@ -42,6 +96,9 @@ export default function QuizPage() {
 
   function handleSelectedOption(i) {
     setSelected(true);
+    pickedIndex = i;
+    setPickedOption(shuffledOptions[pickedIndex]);
+
     const { correct_answer } = question[currCount];
     if (correct_answer === shuffledOptions[i]) {
       setCorrect((prevScore) => prevScore + 1);
@@ -66,7 +123,13 @@ export default function QuizPage() {
       return Math.random() - 0.5;
     });
 
-    questionElement = <Question questions={question[currCount].question} />;
+    questionElement = (
+      <Question
+        questions={question[currCount].question
+          .replace(/&#039;/g, "'")
+          .replace(/&quot;/g, "'")}
+      />
+    );
 
     shuffledOptions = optionsToPick.sort(() => {
       return Math.random() - 0.5;
@@ -75,8 +138,12 @@ export default function QuizPage() {
     optionElement = shuffledOptions.map((option, i) => {
       return (
         <Option
-          option={option}
+          option={option.replace(/&#039;/g, "'").replace(/&quot;/g, "'")}
+          selectedOption={pickedOption}
           key={i}
+          correct_ans={question[currCount].correct_answer
+            .replace(/&#039;/g, "'")
+            .replace(/&quot;/g, "'")}
           selected={selected}
           handleSelectedOption={() => {
             !selected && handleSelectedOption(i);
@@ -92,8 +159,17 @@ export default function QuizPage() {
     );
   }
 
+  let categoryText = JSON.parse(localStorage.getItem("choice"));
+
   return (
     <main className="main--quizpage">
+      {question && (
+        <div className="choice">
+          <p className="category">Category: {categoryText.category}</p>
+          <p className="category">Difficulty: {categoryText.difficulty}</p>
+        </div>
+      )}
+
       {question && (
         <p className="question--count">
           Question {currCount + 1} of {question.length}
